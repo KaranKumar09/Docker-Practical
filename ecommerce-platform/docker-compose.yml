@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  mysql-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: ecomdb
+      MYSQL_USER: ecomuser
+      MYSQL_PASSWORD: ecompass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - ecommerce-net
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+      restart_policy:
+        condition: any
+      replicas: 1
+
+  node-app:
+    image: your-node-image:latest
+    environment:
+      DB_HOST: mysql-db
+      DB_USER: ecomuser
+      DB_PASSWORD: ecompass
+      DB_NAME: ecomdb
+    networks:
+      - ecommerce-net
+    deploy:
+      restart_policy:
+        condition: any
+      replicas: 2
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - ecommerce-net
+    deploy:
+      restart_policy:
+        condition: any
+      replicas: 3
+
+volumes:
+  mysql_data:
+
+networks:
+  ecommerce-net:
+    driver: overlay
+    attachable: true
