@@ -1,0 +1,7 @@
+# Dockerfile
+FROM mysql:8.0
+
+# Set root password environment variable
+ENV MYSQL_ROOT_PASSWORD=rootpass
+
+EXPOSE 3306
