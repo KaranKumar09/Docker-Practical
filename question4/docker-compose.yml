@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: karankumar15/postgres-custom
+    container_name: postgres-db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - pgnetwork
+    ports:
+      - "5432:5432"
+    restart: always
+
+volumes:
+  pgdata:
+
+networks:
+  pgnetwork:
+    driver: bridge
