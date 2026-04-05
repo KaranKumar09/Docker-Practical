@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  web-service:
+    image: nginx:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: any
+    ports:
+      - "80:80"
+    networks:
+      - swarm-net
+
+  api-service:
+    image: httpd:latest
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: any
+    ports:
+      - "8080:80"
+    networks:
+      - swarm-net
+
+  db-service:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+    volumes:
+      - db_data:/var/lib/mysql
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: any
+    ports:
+      - "3306:3306"
+    networks:
+      - swarm-net
+
+  cache-service:
+    image: redis:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: any
+    networks:
+      - swarm-net
+
+networks:
+  swarm-net:
+    driver: overlay
+
+volumes:
+  db_data:
