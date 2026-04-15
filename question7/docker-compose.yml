@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  mysql-service:
+    image: custom-mysql:swarm
+    ports:
+      - "3306:3306"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
